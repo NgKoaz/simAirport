@@ -1,21 +1,18 @@
 import simpy
-import random
+from typing import Callable
 
 class Checkpoint:
     NextId = 0
 
-    def __init__(self, env: simpy.Environment, numStaff: int, serviceTime: float, isFirstClass: bool) -> None:
+    def __init__(self, env: simpy.Environment, numStaff: int, getServiceTime: Callable, isFirstClass: bool) -> None:
         self.env = env
         self._isFirstClass = isFirstClass
         self.staffs = simpy.Resource(env, numStaff)
-        self.serviceTime = serviceTime
+        self.getServiceTime = getServiceTime
         Checkpoint.NextId += 1
 
     def getStaffs(self) -> simpy.Resource:
         return self.staffs
-
-    def getServingTime(self) -> float:
-        return random.expovariate(1.0 / self.serviceTime)
 
     def isFirstClass(self) -> bool:
         return self._isFirstClass
@@ -30,7 +27,7 @@ class Checkpoint:
         self.onPassengerArrive(passenger)
         with self.staffs.request() as req:
             yield req
-            mu = self.getServingTime()
+            mu = self.getServiceTime()
             # print(f"Checkpoint has random service time {mu} and mean of service time: {self.serviceTime}")
             yield self.env.timeout(mu) 
         self.onPassengerLeave(passenger)

@@ -1,16 +1,15 @@
 import simpy
-import random
+from typing import Callable
 
 from .Generator import Generator
 from .CheckpointManager import *
 from .CheckpointBuilder import CheckpointBuilder
 
 class Simulation:
-    def __init__(self, interArrivalTime: int, cpBuilder: CheckpointBuilder, randomSeed: int, rateFirstClass: float) -> None:
+    def __init__(self, getInterArrivalTime: Callable, cpBuilder: CheckpointBuilder, rateFirstClass: float) -> None:
         self.env = simpy.Environment()
         self.cpManager = CheckpointManager(self.env, cpBuilder)
-        self.generator = Generator(self.env, self.cpManager, interArrivalTime, rateFirstClass)
-        random.seed(randomSeed)
+        self.generator = Generator(self.env, self.cpManager, getInterArrivalTime, rateFirstClass)
         self._prepare()
 
     def _prepare(self) -> None:
@@ -18,9 +17,3 @@ class Simulation:
 
     def run(self, until):
         self.env.run(until=until)
-
-
-# Generator process
-    # => Passerger processes
-    # => Boarding Gate processes
-# Observer process

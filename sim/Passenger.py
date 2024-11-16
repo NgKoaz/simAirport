@@ -42,9 +42,9 @@ class Passenger:
     def run(self):
         while self._nextDestination():
             cp = self._chooseCheckpoint()
-            # self.onPassengerEnterCheckpoint()
+            self.onPassengerEnterCheckpoint()
             yield from cp.serve(self)
-            # self.onPassengerLeaveCheckpoint()
+            self.onPassengerLeaveCheckpoint()
         self.onPassengerLeaveAirport()    
 
     def onPassengerArriveAirport(self):

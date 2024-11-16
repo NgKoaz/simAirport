@@ -1,18 +1,16 @@
 import simpy
 import random
+from typing import Callable
 
 from .Passenger import Passenger
 from .CheckpointManager import CheckpointManager
 
 class Generator:
-    def __init__(self, env: simpy.Environment, cpManager: CheckpointManager, interArrivalTime: float, rateFirstClass: float) -> None:
+    def __init__(self, env: simpy.Environment, cpManager: CheckpointManager, getInterArrivalTime: Callable, rateFirstClass: float) -> None:
         self.env = env
         self.cpManager = cpManager
-        self.interArrivalTime = interArrivalTime
+        self.getInterArrivalTime = getInterArrivalTime
         self.rateFirstClass = rateFirstClass
-    
-    def _getRandomIntervalTime(self) -> float:
-        return random.expovariate(1.0 / self.interArrivalTime)
     
     def run(self):
         # 1. Create a new passenger
@@ -22,8 +20,6 @@ class Generator:
             isPassengerFirstClass = random.random() > (1 - self.rateFirstClass)
             newPassenger = Passenger(self.env, self.cpManager, isPassengerFirstClass)
             self.env.process(newPassenger.run())
-            yield self.env.timeout(self._getRandomIntervalTime())
+            yield self.env.timeout(self.getInterArrivalTime())
 
-    def generateBoardingGate(self):
-        pass
     
