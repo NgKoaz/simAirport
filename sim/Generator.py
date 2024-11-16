@@ -13,15 +13,8 @@ class Generator:
     
     def _getRandomIntervalTime(self) -> float:
         return random.expovariate(1.0 / self.interArrivalTime)
-
-    def runBoardingGate(self):
-        cps = self.cpManager.getBoardingCps()
-        for cp in cps:
-            self.env.process(cp.run())
-
+    
     def run(self):
-        self.runBoardingGate()
-
         # 1. Create a new passenger
         # 2. Increase an ID for next passenger
         # 3. Time out, then back to number 1.

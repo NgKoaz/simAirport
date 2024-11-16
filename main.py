@@ -11,12 +11,9 @@ cpBuilder.addSecurityCps(True, 1, 3)
 cpBuilder.addSecurityCps(False, 1, 1)
 cpBuilder.addSecurityCps(False, 1, 1)
 
-cpBuilder.addBoardingCps(True, 1, 0.15, "gate1", 300)
-cpBuilder.addBoardingCps(False, 1, 0.15, "gate1", 300)
-
-cpBuilder.addBoardingCps(True, 1, 0.15, "gate2", 300)
-cpBuilder.addBoardingCps(False, 1, 0.15, "gate2", 330)
+cpBuilder.addBoardingCps(True, 1, 0.15)
+cpBuilder.addBoardingCps(False, 1, 0.15)
 
 
 sim = Simulation(interArrivalTime=1, cpBuilder=cpBuilder, randomSeed=int(time.time()), rateFirstClass=0.05)
-sim.run(until=1500)
+sim.run(until=200)

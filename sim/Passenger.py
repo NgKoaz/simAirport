@@ -26,9 +26,6 @@ class Passenger:
     def getDestination(self):
         return self.dest
 
-    def getTimePassengerArriveInAdvance(self):
-        return random.gauss(90, 30)
-
     def _nextDestination(self) -> bool:
         self.dest += 1
         return self.dest != Destination.FINISH
@@ -39,8 +36,7 @@ class Passenger:
         elif self.dest == Destination.SECURITY:
             return self.cpManager.getProperCheckpoint(CheckpointManager.SECURITY, self.isFirstClass)
         elif self.dest == Destination.BOARDING:
-            earlyArrivalTime = self.getTimePassengerArriveInAdvance()
-            return self.cpManager.getProperBoardingGate(earlyArrivalTime, self.isFirstClass)
+            return self.cpManager.getProperCheckpoint(CheckpointManager.BOARDING, self.isFirstClass)
         raise Exception("[Error] Wrong logic!")
 
     def run(self):
@@ -49,15 +45,16 @@ class Passenger:
             # self.onPassengerEnterCheckpoint()
             yield from cp.serve(self)
             # self.onPassengerLeaveCheckpoint()
-        # self.onPassengerLeaveAirport()    
+        self.onPassengerLeaveAirport()    
 
     def onPassengerArriveAirport(self):
+        print(f"Passenger has id {self.id} has been created! At: {self.env.now}")
         pass
         # print(f"Passenger has id {self.id} has been created! At: {self.env.now}")
 
     def onPassengerLeaveAirport(self):
-        pass
-        # print(f"Passenger has id {self.id} has left! At: {self.env.now}")
+        print(f"Passenger has id {self.id} has left! At: {self.env.now}")
+        
 
     def onPassengerEnterCheckpoint(self):
         pass

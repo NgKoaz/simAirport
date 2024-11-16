@@ -2,8 +2,6 @@ import simpy
 from typing import List
 from .Checkpoint import Checkpoint
 from .CheckpointBuilder import CheckpointBuilder
-from .BoardingGate import BoardingGate
-
 
 class CheckpointManager:
     CHECK_IN = "check-in"
@@ -13,24 +11,14 @@ class CheckpointManager:
     def __init__(self, env: simpy.Environment, cpBuilder: CheckpointBuilder) -> None:
         self.env = env
         self.checkpoints = cpBuilder.build(env)
-    
-    def getBoardingGateList(self):
-        gateIdList = {}
-        cps: List[BoardingGate] = self.checkpoints[CheckpointManager.BOARDING]
-        for cp in cps: 
-            if cp.getGateId() not in gateIdList: 
-                gateIdList[cp.getGateId()] = [cp]
-            else: 
-                gateIdList[cp.getGateId()].append(cp)
-        return gateIdList
-    
+
     def getCheckinCps(self) -> List[Checkpoint]:
         return self.checkpoints["check-in"]
     
     def getSecurityCps(self) -> List[Checkpoint]:
         return self.checkpoints["security"]
     
-    def getBoardingCps(self) -> List[BoardingGate]:
+    def getBoardingCps(self) -> List[Checkpoint]:
         return self.checkpoints["boarding"]
 
     def _getShortestCps(self, cps: List[Checkpoint]) -> Checkpoint:
@@ -48,10 +36,3 @@ class CheckpointManager:
         if len(candidateCps) <= 0:
             raise Exception("Passenger can't choose Checkpoint!")
         return self._getShortestCps(candidateCps)
-
-    def getProperBoardingGate(self, earlyArrivalTime, isFirstClass: bool) -> BoardingGate:
-        candidateCps = self.checkpoints[CheckpointManager.BOARDING] 
-        candidateCps: List[BoardingGate] = list(self._filter(candidateCps, isFirstClass))
-        if len(candidateCps) <= 0:
-            raise Exception("Passenger can't choose Checkpoint!")
-        return min(candidateCps, key=lambda cp: abs(cp.getTimeStart() - (self.env.now + earlyArrivalTime)))    

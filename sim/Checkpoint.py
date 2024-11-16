@@ -9,7 +9,6 @@ class Checkpoint:
         self._isFirstClass = isFirstClass
         self.staffs = simpy.Resource(env, numStaff)
         self.serviceTime = serviceTime
-        self.data = []
         Checkpoint.NextId += 1
 
     def getStaffs(self) -> simpy.Resource:
